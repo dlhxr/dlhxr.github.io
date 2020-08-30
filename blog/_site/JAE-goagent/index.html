@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="dlhxr" />
+    <title>JAE架设国内反向GoAgent | dlhxr</title>
+    <link rel="shortcut icon" href="/blog/favicon.ico">
+    <link rel="stylesheet" href="/blog/media/css/style.css">
+	<link rel="stylesheet" href="/blog/media/css/prettify.css">         <!-- Prettify -->
+    <link rel="stylesheet" href="/blog/media/css/backtop.css">                 <!-- Back Top 1/3 -->
+    <script type="text/javascript" src="/blog/media/js/backtop.js"></script>   <!-- Back Top 2/3 -->
+    <script type="text/javascript" src="/blog/media/js/prettify.js"></script>  <!-- Prettify -->
+	<script type="text/javascript" src="/blog/media/js/lang-vb.js"></script><!-- Prettify VB-->
+	<script type="text/javascript" src="/blog/media/js/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="/blog/media/js/timespan.js"></script>
+
+  </head>
+
+  <body onLoad="setInterval(setTimeSpan,1000);prettyPrint()">
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <h1>JAE架设国内反向GoAgent</h1>
+        </header>
+        <nav>
+        <span><a title="home page" class="" href="/blog/">Home</a></span>
+        <span><a title="about" class="" href="/blog/sub/about/">About</a></span>
+        <span><a title="guestbook" class="" href="/blog/sub/guestbook/">Guestbook</a></span>
+        <span><a title="categories" class="" href="/blog/sub/categories/">Categories</a></span>
+        <span><a title="tags" class="" href="/blog/sub/tags/">Tags</a></span>
+        <span><a title="links" class="" href="/blog/sub/links/">Links</a></span>
+        </nav>
+        <article class="content">
+        <span class="time">
+  <time datetime="2014-08-06">2014-08-06</time>
+</span>
+
+
+<span class="author">
+  /
+  <a href="/blog/">dlhxr</a>
+</span>
+
+
+<span class="tags">
+  /
+  
+  <a href="/blog/sub/tags/#Tutorial" title="Tutorial">#Tutorial</a>
+  
+  <a href="/blog/sub/tags/#Proxy" title="Proxy">#Proxy</a>
+  
+</span>
+
+
+<!-- 开头提示文章末尾有二维码 -->
+<section class="meta">
+  <span><p align="left">【页尾可见本文二维码】</p></span>
+</section>
+
+<section class="post">
+<p>
+	本文写得很简陋，只给出一个大体过程，细节遇到问题可以百度得到答案。
+</p>
+<p>
+	GoAgent应该被很多人熟知，都使用这个出去看看，不过这次要说的是反向GoAgent。
+</p>
+<p>
+	顾名思义，反向GoAgent就是国外代理回大陆，你懂的，国外很多大陆的服务有IP检测，非大陆IP不提供服务。
+</p>
+<p>
+	此外呢，某些国内的网络访问一些国内的网络速度慢，或者无法访问，此种情况多出现在教育网上~
+</p>
+<p>
+	闲话不多说，下面就是部署GoAgent PHP到<a target="_blank" href="http://jae.jd.com/">JAE（京东云擎）</a>的过程
+</p>
+<p>
+	首先注册京东云擎，需要手机验证，创建一个php应用，得到该应用的Git地址
+</p>
+<p>
+	使用Git克隆下来<pre class="prettyprint linenums">git clone https://code.jd.com/dlhxr/jae_XXXX.git</pre>删除所有克隆下来的文件，将GoAgent文件夹中server下的php里面所有文件复制过来
+</p>
+<p>
+	提交更改，push到代码库<pre class="prettyprint linenums">
+	git add --all
+	git commit -m "init"
+	git push origin master</pre>
+</p>
+<p>
+	进入云擎管理界面，点击快速部署，让应用使用最新的代码
+</p>
+<p>
+	本地GoAgent的配置文件把php下面的enable=1，然后填入创建的php应用地址即可，如果不用gae可以让gae的enable=0
+</p>
+<p>
+	本地代理设置，默认端口是8088
+</p>
+
+<p>06 Aug 2014</p>
+
+</section>
+
+<!-- Add Auto QR Code Generator -->
+<!--liantu api for QR code-->
+<script type="text/javascript">  
+  thisURL  = document.URL;  
+  strwrite = "<p align='center'><img src='http://qr.liantu.com/api.php?w=150&text=" + thisURL + "'/>（传送门）</p>";
+  document.write( strwrite ); 
+</script>
+
+
+
+<!--Google Api for QR Code
+<script type="text/javascript">  
+  thisURL  = document.URL;  
+  strwrite = "<p align='center'><img src='http://chart.apis.google.com/chart?chs=120x120&amp;cht=qr&amp;chld=|1&amp;chl=" + thisURL + "' width='120' height='120' alt='QR Code'/>（传送门）</p>";
+   document.write( strwrite ); 
+</script>
+-->
+<!-- QR Code End -->
+
+<section class="meta">
+<span>
+<p align="center">(转载本站文章请注明作者和出处，请勿用于任何商业用途)</p>
+</span>
+
+<br/>
+
+<!-- Baidu Botton (Part 1/2)-->
+<div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a><a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a></div>
+<!-- Baidu Botton End -->
+
+<span>
+	<a  href="/blog/VPS-openvpn" class="pageNav"  >Previous</a>
+
+	&nbsp;&nbsp;&nbsp;
+
+	<a  href="/blog/JAE-snova" class="pageNav"  >Next</a>
+  
+</span>
+<hr>
+<span class="author">
+  <a href="/blog/">dlhxr</a>
+</span>
+<span class="time">
+  /
+  <time datetime="2014-08-06">2014-08-06</time>
+</span>
+<br />
+<span class="license">
+  Published under <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">(CC) BY-NC-SA</a>
+</span>
+
+
+<span class="categories">
+  in categories
+  
+  <a href="/blog/sub/categories/#tutorial" title="tutorial">tutorial</a>&nbsp;
+  
+</span>
+
+
+
+<span class="tags">
+  tagged with 
+  
+  <a href="/blog/sub/tags/#Tutorial" title="Tutorial">Tutorial</a>&nbsp;
+  
+  <a href="/blog/sub/tags/#Proxy" title="Proxy">Proxy</a>&nbsp;
+  
+</span>
+
+
+</section>
+
+<!-- 友言JS代码 start (一个网页只需插入一次) -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1953111"></script>
+<!-- 友言JS代码 end -->
+
+
+<!-- Baidu Botton (Part 2/2) -->
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+<!-- Baidu Botton End -->
+
+
+        </article>
+      </div>
+
+      <footer>
+		
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> & <a href="http://www.gitcafe.com">GitCafe</a> | Copyright &copy; 2014 ~ 2014 by <a href="/blog/sub/about/">dlhxr</a> | <span class="label label-info" id="timeSpan"></span></small></p>
+      </footer>
+    </div>
+
+    <!-- Back Top 3/3 -->
+    <div id="back-top">
+        <a href="#top" title="回到顶部"></a>
+    </div>
+    <!-- ++++++++++++ -->
+
+  </body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="dlhxr" />
+    <title>在国外老牌云空间Heroku架设Shadowsocks | dlhxr</title>
+    <link rel="shortcut icon" href="/blog/favicon.ico">
+    <link rel="stylesheet" href="/blog/media/css/style.css">
+	<link rel="stylesheet" href="/blog/media/css/prettify.css">         <!-- Prettify -->
+    <link rel="stylesheet" href="/blog/media/css/backtop.css">                 <!-- Back Top 1/3 -->
+    <script type="text/javascript" src="/blog/media/js/backtop.js"></script>   <!-- Back Top 2/3 -->
+    <script type="text/javascript" src="/blog/media/js/prettify.js"></script>  <!-- Prettify -->
+	<script type="text/javascript" src="/blog/media/js/lang-vb.js"></script><!-- Prettify VB-->
+	<script type="text/javascript" src="/blog/media/js/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="/blog/media/js/timespan.js"></script>
+
+  </head>
+
+  <body onLoad="setInterval(setTimeSpan,1000);prettyPrint()">
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <h1>在国外老牌云空间Heroku架设Shadowsocks</h1>
+        </header>
+        <nav>
+        <span><a title="home page" class="" href="/blog/">Home</a></span>
+        <span><a title="about" class="" href="/blog/sub/about/">About</a></span>
+        <span><a title="guestbook" class="" href="/blog/sub/guestbook/">Guestbook</a></span>
+        <span><a title="categories" class="" href="/blog/sub/categories/">Categories</a></span>
+        <span><a title="tags" class="" href="/blog/sub/tags/">Tags</a></span>
+        <span><a title="links" class="" href="/blog/sub/links/">Links</a></span>
+        </nav>
+        <article class="content">
+        <span class="time">
+  <time datetime="2014-08-07">2014-08-07</time>
+</span>
+
+
+<span class="author">
+  /
+  <a href="/blog/">dlhxr</a>
+</span>
+
+
+<span class="tags">
+  /
+  
+  <a href="/blog/sub/tags/#Tutorial" title="Tutorial">#Tutorial</a>
+  
+  <a href="/blog/sub/tags/#Proxy" title="Proxy">#Proxy</a>
+  
+</span>
+
+
+<!-- 开头提示文章末尾有二维码 -->
+<section class="meta">
+  <span><p align="left">【页尾可见本文二维码】</p></span>
+</section>
+
+<section class="post">
+<p>
+	最近搞代理搞上瘾了，晚上突然发现一种免费部署shadowsocks的方案，于是进行尝试~
+</p>
+<p>
+	国外老牌云空间<a target="_blank" href="https://www.heroku.com/">Heroku</a>免费不限流量，而且也有改好支持Heroku的shadowsocks版本，开始部署吧~
+</p>
+<p>
+	（项目名称是<a target="_blank" href="https://github.com/mrluanma/shadowsocks-heroku">shadowsocks-heroku</a>，使用&nbsp;WebSockets代替raw sockets，使之可以运行在云空间上。）
+</p>
+<p>
+	<br />
+</p>
+<p>
+	<strong>账号注册及初始化：</strong>
+</p>
+<p>
+	1.进入<pre class="prettyprint linenums">https://www.heroku.com/</pre>点击sign up for free，需要提供邮箱地址进行验证（不需要其他信息哦~），值得一提的是国内邮箱连163都被block了，所以最后我还是用gmail申请的。
+</p>
+<p>
+	2.登陆你的邮箱，点击链接激活自己的用户。
+</p>
+<p>
+	3.安装Heroku专用工具Heroku Toolbelt，下载地址<pre class="prettyprint linenums">https://toolbelt.heroku.com/</pre>有的时候可能访问不了，那就自己百度吧~
+</p>
+<p>
+	4.安装Toolbelt过程中，如果之前安装过git的话把安装页面的git选项去掉，推荐使用git官方的工具。
+</p>
+<p>
+	5.安装完毕后，进入cmd分别输入heroku和git，如果有参数提示，那么就安装成功了~
+</p>
+<p>
+	<br />
+</p>
+<p>
+	<strong>部署shadowsocks-heroku：</strong>
+</p>
+<p>
+	1.首先找到shadowsocks-heroku项目，地址是<pre class="prettyprint linenums">https://github.com/mrluanma/shadowsocks-heroku</pre>可以使用<pre class="prettyprint linenums">git clone https://github.com/mrluanma/shadowsocks-heroku.git</pre>或者直接下载代码的zip包。
+</p>
+<p>
+	2.进入cmd，输入heroku login，输入用户名和密码，如果没有ssh key先根据提示创建key，会自动上传到服务器。
+</p>
+<p>
+	3.创建一个新的app，输入heroku create，新创建的app名称是一个类似于still-tor-8707这样的名字，看heroku create的返回信息。
+</p>
+<p>
+	4.设立一个git库，用于上传shadowsocks，直接把新建的app的git库给clone下来。<pre class="prettyprint linenums">git clone git@heroku.com:still-tor-8707.git</pre>
+</p>
+<p>
+	5.把之前从github下载的shadowsocks里面所有文件放进still-tor-8707文件夹下面，输入
+<pre class="prettyprint linenums">
+git add --all
+git commit -m "init"
+git push origin master
+</pre>
+</p>
+<p>
+	6.应用会自动部署，会看到一些提示~
+</p>
+<p>
+	7.更改config，主要是加密方式和密码<pre class="prettyprint linenums">heroku config:set METHOD=rc4 KEY=foobar</pre>其中foobar是密码，可以自己设置。这时候服务端就部署好了~
+</p>
+<p>
+	<br />
+</p>
+<p>
+	<strong>客户端shadowsocks-heroku：</strong>
+</p>
+<p>
+	1.官方的shadowsocks-gui是用不了的，因为使用了WebSockets，会有一定的问题（如果想尝试远程端口是80）。
+</p>
+<p>
+	2.所以我们就要自己做客户端了，到NodeJs官网上面下载node的binary文件（Windows和Mac分别下载对应的文件），帮助我们建立本地服务器。
+</p>
+<p>
+	3.这里以windows为例，系统是64位的就使用64位的binary，32位就用32位的binary。
+</p>
+<p>
+	4.把之前下载的shadowsocks-heroku源码中的args.js、config.json、encrypt.js、local.js、merge_sort.js放入和binary一个目录下面。
+</p>
+<p>
+	5.打开cmd，进入存放刚才几个文件的目录，输入<pre class="prettyprint linenums">node local.js -s still-tor-8707.herokuapp.com -l 1080 -m rc4 -k foobar</pre>其中still-tor-8707是应用名称，1080是本地端口号，rc4是加密方法，foobar是shadowsocks的密码，根据自己的情况修改~
+</p>
+<p>
+	6.于是就可以使用127.0.0.1:1080代理咯~
+</p>
+<p>
+	7.如果觉得不方便，可以自己建一个bat文件
+<pre class="prettyprint linenums">
+@echo off
+path = %~dp0node_shadowsocks.exe
+start "" /b "%path%" local.js -s still-tor-8707.herokuapp.com -l 1080 -m rc4 -k foobar
+</pre>
+</p>
+<p>
+	8.如果想自动后台，可以使用下面的代码
+<pre class="prettyprint linenums">
+@echo off
+if "%1" == "h" goto Begin
+mshta vbscript:createobject("wscript.shell").run("%~nx0 h",0)(window.close)&amp;&amp;exit
+:Begin
+path = %~dp0node_shadowsocks.exe
+start "" /b "%path%" local.js -s still-tor-8707.herokuapp.com -l 1080 -m rc4 -k foobar
+exit
+</pre>
+</p>
+<p>
+	8.不过免费的服务的确不太给力，勉强能用啦~
+</p>
+<p><br /></p>
+<p>07 Aug 2014</p>
+
+</section>
+
+<!-- Add Auto QR Code Generator -->
+<!--liantu api for QR code-->
+<script type="text/javascript">  
+  thisURL  = document.URL;  
+  strwrite = "<p align='center'><img src='http://qr.liantu.com/api.php?w=150&text=" + thisURL + "'/>（传送门）</p>";
+  document.write( strwrite ); 
+</script>
+
+
+
+<!--Google Api for QR Code
+<script type="text/javascript">  
+  thisURL  = document.URL;  
+  strwrite = "<p align='center'><img src='http://chart.apis.google.com/chart?chs=120x120&amp;cht=qr&amp;chld=|1&amp;chl=" + thisURL + "' width='120' height='120' alt='QR Code'/>（传送门）</p>";
+   document.write( strwrite ); 
+</script>
+-->
+<!-- QR Code End -->
+
+<section class="meta">
+<span>
+<p align="center">(转载本站文章请注明作者和出处，请勿用于任何商业用途)</p>
+</span>
+
+<br/>
+
+<!-- Baidu Botton (Part 1/2)-->
+<div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a><a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a></div>
+<!-- Baidu Botton End -->
+
+<span>
+	<a  href="/blog/JAE-snova" class="pageNav"  >Previous</a>
+
+	&nbsp;&nbsp;&nbsp;
+
+	<a   class="pageNavInvalid"  >Next</a>
+  
+</span>
+<hr>
+<span class="author">
+  <a href="/blog/">dlhxr</a>
+</span>
+<span class="time">
+  /
+  <time datetime="2014-08-07">2014-08-07</time>
+</span>
+<br />
+<span class="license">
+  Published under <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">(CC) BY-NC-SA</a>
+</span>
+
+
+<span class="categories">
+  in categories
+  
+  <a href="/blog/sub/categories/#tutorial" title="tutorial">tutorial</a>&nbsp;
+  
+</span>
+
+
+
+<span class="tags">
+  tagged with 
+  
+  <a href="/blog/sub/tags/#Tutorial" title="Tutorial">Tutorial</a>&nbsp;
+  
+  <a href="/blog/sub/tags/#Proxy" title="Proxy">Proxy</a>&nbsp;
+  
+</span>
+
+
+</section>
+
+<!-- 友言JS代码 start (一个网页只需插入一次) -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1953111"></script>
+<!-- 友言JS代码 end -->
+
+
+<!-- Baidu Botton (Part 2/2) -->
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+<!-- Baidu Botton End -->
+
+
+        </article>
+      </div>
+
+      <footer>
+		
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> & <a href="http://www.gitcafe.com">GitCafe</a> | Copyright &copy; 2014 ~ 2014 by <a href="/blog/sub/about/">dlhxr</a> | <span class="label label-info" id="timeSpan"></span></small></p>
+      </footer>
+    </div>
+
+    <!-- Back Top 3/3 -->
+    <div id="back-top">
+        <a href="#top" title="回到顶部"></a>
+    </div>
+    <!-- ++++++++++++ -->
+
+  </body>
+</html>

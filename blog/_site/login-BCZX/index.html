@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="dlhxr" />
+    <title>模拟登陆BCZX并抓数据（Python） | dlhxr</title>
+    <link rel="shortcut icon" href="/blog/favicon.ico">
+    <link rel="stylesheet" href="/blog/media/css/style.css">
+	<link rel="stylesheet" href="/blog/media/css/prettify.css">         <!-- Prettify -->
+    <link rel="stylesheet" href="/blog/media/css/backtop.css">                 <!-- Back Top 1/3 -->
+    <script type="text/javascript" src="/blog/media/js/backtop.js"></script>   <!-- Back Top 2/3 -->
+    <script type="text/javascript" src="/blog/media/js/prettify.js"></script>  <!-- Prettify -->
+	<script type="text/javascript" src="/blog/media/js/lang-vb.js"></script><!-- Prettify VB-->
+	<script type="text/javascript" src="/blog/media/js/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="/blog/media/js/timespan.js"></script>
+
+  </head>
+
+  <body onLoad="setInterval(setTimeSpan,1000);prettyPrint()">
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <h1>模拟登陆BCZX并抓数据（Python）</h1>
+        </header>
+        <nav>
+        <span><a title="home page" class="" href="/blog/">Home</a></span>
+        <span><a title="about" class="" href="/blog/sub/about/">About</a></span>
+        <span><a title="guestbook" class="" href="/blog/sub/guestbook/">Guestbook</a></span>
+        <span><a title="categories" class="" href="/blog/sub/categories/">Categories</a></span>
+        <span><a title="tags" class="" href="/blog/sub/tags/">Tags</a></span>
+        <span><a title="links" class="" href="/blog/sub/links/">Links</a></span>
+        </nav>
+        <article class="content">
+        <span class="time">
+  <time datetime="2014-07-31">2014-07-31</time>
+</span>
+
+
+<span class="author">
+  /
+  <a href="/blog/">dlhxr</a>
+</span>
+
+
+<span class="tags">
+  /
+  
+  <a href="/blog/sub/tags/#Python" title="Python">#Python</a>
+  
+</span>
+
+
+<!-- 开头提示文章末尾有二维码 -->
+<section class="meta">
+  <span><p align="left">【页尾可见本文二维码】</p></span>
+</section>
+
+<section class="post">
+<p>最近学习python，写了个模拟登陆BCZX的脚本，方便工作~</p>
+
+<p>首先import需要的库，蛮多的~</p>
+<pre class="prettyprint linenums">
+import re,cookielib,urllib,urllib2,os,sys,csv,codecs,time
+</pre>
+
+<p>定义需要的变量，当然用户名密码此处匿。</p>
+<pre class="prettyprint linenums">
+#define useful variables
+Username = "XXXX"
+Password = "XXXX"
+#Final CSV file location
+pathr = 'D:/desktop/BCZX.csv'
+pathw = 'D:/desktop/temp.csv'
+</pre>
+
+<p>登陆BCZX</p>
+<pre class="prettyprint linenums">
+def loginBCZX():
+    #install cookies
+    cj = cookielib.CookieJar()
+    cookies = urllib2.HTTPCookieProcessor(cj)
+    opener = urllib2.build_opener(cookies)
+    urllib2.install_opener(opener)
+	
+    MainLoginUrl = "http://www.baiinfo.com/Account/TopPart"
+    
+    #post data
+    postDict = {
+        'LogName'       : Username,
+        'password'      : Password,
+        'RememberMe'    : "false",
+    }
+    postData = urllib.urlencode(postDict)
+    
+    #login
+    req = urllib2.Request(MainLoginUrl, postData)
+    req.add_header('Content-Type', "application/x-www-form-urlencoded")
+    resp = urllib2.urlopen(req)
+    respHtml = resp.read()
+</pre>
+
+<p>得到当前日期和前一个月的第一天，因为具体数据的url需要这个</p>
+<pre class="prettyprint linenums">
+def getdate():
+    currentdate = time.strftime("%Y-%m-%d")
+    year = time.strftime("%Y")
+    month = time.strftime("%m")
+    if int(month)!=1:
+        if int(month)&gt;11:
+            lastdate = year + '-' + str(int(month)-1) + '-01'
+        else:
+            lastdate = year + '-0' + str(int(month)-1) + '-01'
+    else:
+        lastdate = str(int(year)-1) + '-12-01' 
+    return currentdate,lastdate
+</pre>
+
+<p>先创建文件，拿甘氨酸作为第一个物种</p>
+<pre class="prettyprint linenums">
+def Glycine(writer):
+    #data page
+    userMainUrl = "http://www.baiinfo.com/Orders/NewHistoryGrid?begin=" + getdate()[1] + "&amp;end=" + getdate()[0] + "&amp;skuid=19679%2C&amp;productID=1317"
+    
+    req2 = urllib2.Request(userMainUrl)
+    resp2 = urllib2.urlopen(req2)
+    respHtml2 = resp2.read()
+    pattern =re.compile('\\\u003e\\\u003ctd\s+?\\\u003e(.*?)\\\u003c/td\\\u003e\\\u003ctd\s+?\\\u003e(.*?)\\\u003c/td\\\u003e\\\u003c/tr\\\u003e\\\u003ctr', re.DOTALL)
+    foundData = pattern.findall(respHtml2)
+    if(foundData):
+        writer.writerow(['','','','','','甘氨酸'])
+        for eachitem in foundData:
+            date=eachitem[0]
+            price=eachitem[1]
+            print date
+            print price
+            writer.writerow(['','','','',date,price])
+</pre>
+
+<p>获取其他物种数据，写入BCZX.csv</p>
+<pre class="prettyprint linenums">
+def getprice(pathr,pathw,number,name):
+    userMainUrl = "http://www.baiinfo.com/Orders/NewHistoryGrid?begin=" + getdate()[1] + "&amp;end=" + getdate()[0] + number
+
+    req2 = urllib2.Request(userMainUrl)
+    resp2 = urllib2.urlopen(req2)
+    respHtml2 = resp2.read()   
+
+    pattern =re.compile('\\\u003e\\\u003ctd\s+?\\\u003e(.*?)\\\u003c/td\\\u003e\\\u003ctd\s+?\\\u003e(.*?)\\\u003c/td\\\u003e\\\u003c/tr\\\u003e\\\u003ctr', re.DOTALL)
+    foundData = pattern.findall(respHtml2)
+    if(foundData):
+        csvfilew = file(pathw, 'wb')
+        csvfilew.write(codecs.BOM_UTF8)
+        writer = csv.writer(csvfilew,dialect='excel')
+        csvfiler = file(pathr)
+        reader = csv.reader(csvfiler)
+        for row in reader:
+            if reader.line_num == 1:
+                row.extend(['',name])
+                writer.writerow(row)
+                continue
+            if reader.line_num-2 &lt; len(foundData):
+                eachitem = foundData[reader.line_num-2]
+                date=eachitem[0]
+                price=eachitem[1]
+                print date
+                print price
+                row.extend([date,price])
+            writer.writerow(row)
+        csvfilew.close()
+        csvfiler.close()
+        os.remove(pathr)
+        os.rename(pathw,pathr) 
+</pre>
+
+<p>主函数，先登陆，再获取甘氨酸数据，最后获取其他物种数据</p>
+<pre class="prettyprint linenums">
+def main():
+
+    loginBCZX()
+    
+    Glycine(csv.writer(file(pathr, 'wb'),dialect='excel'))
+    webpagenum=['&amp;skuid=19679%2C&amp;productID=1317','&amp;skuid=27057%2C&amp;productID=1848','&amp;skuid=21999%2C&amp;productID=1543','&amp;skuid=24830%2C&amp;productID=1715','&amp;skuid=3339%2C&amp;productID=526','&amp;skuid=8156%2C&amp;productID=526','&amp;skuid=21845%2C&amp;productID=1501','&amp;skuid=1097%2C&amp;productID=73','&amp;skuid=8350%2C&amp;productID=1140','&amp;skuid=8184%2C&amp;productID=1134']
+    speciesname=['甘氨酸','百草枯','动力煤','无烟末煤','沥青（内）','沥青（外）','萤石粉','蒽油 ','硫酸巨化98%','硝酸铵兴化颗粒']
+    for i in range(len(speciesname)-1):
+        getprice(pathr,pathw,webpagenum[i+1],speciesname[i+1])
+</pre>
+
+<p>最后再执行main()即可~</p>
+
+<p>31 Jul 2014</p>
+
+</section>
+
+<!-- Add Auto QR Code Generator -->
+<!--liantu api for QR code-->
+<script type="text/javascript">  
+  thisURL  = document.URL;  
+  strwrite = "<p align='center'><img src='http://qr.liantu.com/api.php?w=150&text=" + thisURL + "'/>（传送门）</p>";
+  document.write( strwrite ); 
+</script>
+
+
+
+<!--Google Api for QR Code
+<script type="text/javascript">  
+  thisURL  = document.URL;  
+  strwrite = "<p align='center'><img src='http://chart.apis.google.com/chart?chs=120x120&amp;cht=qr&amp;chld=|1&amp;chl=" + thisURL + "' width='120' height='120' alt='QR Code'/>（传送门）</p>";
+   document.write( strwrite ); 
+</script>
+-->
+<!-- QR Code End -->
+
+<section class="meta">
+<span>
+<p align="center">(转载本站文章请注明作者和出处，请勿用于任何商业用途)</p>
+</span>
+
+<br/>
+
+<!-- Baidu Botton (Part 1/2)-->
+<div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a><a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a></div>
+<!-- Baidu Botton End -->
+
+<span>
+	<a  href="/blog/hello-world" class="pageNav"  >Previous</a>
+
+	&nbsp;&nbsp;&nbsp;
+
+	<a  href="/blog/login-UTSZ" class="pageNav"  >Next</a>
+  
+</span>
+<hr>
+<span class="author">
+  <a href="/blog/">dlhxr</a>
+</span>
+<span class="time">
+  /
+  <time datetime="2014-07-31">2014-07-31</time>
+</span>
+<br />
+<span class="license">
+  Published under <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">(CC) BY-NC-SA</a>
+</span>
+
+
+<span class="categories">
+  in categories
+  
+  <a href="/blog/sub/categories/#python" title="python">python</a>&nbsp;
+  
+</span>
+
+
+
+<span class="tags">
+  tagged with 
+  
+  <a href="/blog/sub/tags/#Python" title="Python">Python</a>&nbsp;
+  
+</span>
+
+
+</section>
+
+<!-- 友言JS代码 start (一个网页只需插入一次) -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1953111"></script>
+<!-- 友言JS代码 end -->
+
+
+<!-- Baidu Botton (Part 2/2) -->
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+<!-- Baidu Botton End -->
+
+
+        </article>
+      </div>
+
+      <footer>
+		
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> & <a href="http://www.gitcafe.com">GitCafe</a> | Copyright &copy; 2014 ~ 2014 by <a href="/blog/sub/about/">dlhxr</a> | <span class="label label-info" id="timeSpan"></span></small></p>
+      </footer>
+    </div>
+
+    <!-- Back Top 3/3 -->
+    <div id="back-top">
+        <a href="#top" title="回到顶部"></a>
+    </div>
+    <!-- ++++++++++++ -->
+
+  </body>
+</html>
