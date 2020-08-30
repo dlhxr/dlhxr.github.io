@@ -1,0 +1,6 @@
+baseurl: /blog
+markdown: kramdown
+permalink: /:title
+name: "dlhxr"
+author: "dlhxr"
+paginate: 8
