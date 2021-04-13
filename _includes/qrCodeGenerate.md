@@ -1,7 +1,7 @@
-<!--cli api for QR code-->
+<!--lofter api for QR code-->
 <script type="text/javascript">  
   thisURL  = document.URL;  
-  strwrite = "<p align='center'><img src='https://cli.im/api/qrcode/code?text=" + thisURL + "'/>（传送门）</p>";
+  strwrite = "<p align='center'><img src='https://www.lofter.com/genBitmaxImage?url=" + thisURL + "'/>（传送门）</p>";
   document.write( strwrite ); 
 </script>
 
