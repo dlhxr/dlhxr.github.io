@@ -71,7 +71,8 @@ layout: default
   {% endfor %}
 </span>
 {% endif %}
-<!--
+
+{% comment %}
 {% if page.tags %}
 <span class="tags">
   tagged with 
@@ -80,8 +81,9 @@ layout: default
   {% endfor %}
 </span>
 {% endif %}
--->
+{% endcomment %}
 </section>
 
-<!-- {% include comments.md %} -->
-
+{% comment %}
+{% include comments.md %}
+{% endcomment %}
