@@ -25,9 +25,9 @@
         <nav>
         <span><a title="home page" class="" href="{{ site.baseurl }}/">Home</a></span>
         <span><a title="about" class="" href="{{ site.baseurl }}/sub/about/">About</a></span>
-        <span><a title="guestbook" class="" href="{{ site.baseurl }}/sub/guestbook/">Guestbook</a></span>
+        <!--<span><a title="guestbook" class="" href="{{ site.baseurl }}/sub/guestbook/">Guestbook</a></span>-->
         <span><a title="categories" class="" href="{{ site.baseurl }}/sub/categories/">Categories</a></span>
-        <span><a title="tags" class="" href="{{ site.baseurl }}/sub/tags/">Tags</a></span>
+        <!--<span><a title="tags" class="" href="{{ site.baseurl }}/sub/tags/">Tags</a></span>-->
         <span><a title="links" class="" href="{{ site.baseurl }}/sub/links/">Links</a></span>
         </nav>
         <article class="content">
@@ -37,7 +37,7 @@
 
       <footer>
 		{% assign first_post = site.posts | last %}
-        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> & <a href="http://www.github.com">GitCafe</a> | Copyright &copy; {{ first_post.date | date: "%Y" }} ~ {{ site.time | date: "%Y" }} by <a href="{{ site.baseurl }}/sub/about/">{{ site.author }}</a> | <span class="label label-info" id="timeSpan"></span></small></p>
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> & <a href="http://www.github.com">Github</a> | Copyright &copy; {{ first_post.date | date: "%Y" }} ~ {{ site.time | date: "%Y" }} by <a href="{{ site.baseurl }}/sub/about/">{{ site.author }}</a> | <span class="label label-info" id="timeSpan"></span></small></p>
       </footer>
     </div>
 
