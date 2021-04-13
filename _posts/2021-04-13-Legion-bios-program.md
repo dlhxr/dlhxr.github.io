@@ -19,7 +19,7 @@ tags:
 
 1. 寻找Bios芯片位置xx
 
-![](/meida/images/2021-04-13-Legion-bios-program/motherboard.png) 
+![image](/meida/images/2021-04-13-Legion-bios-program/motherboard.png) 
 
 <br>
 <p>{{ page.date | date_to_string }}</p>
