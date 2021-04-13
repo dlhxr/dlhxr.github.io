@@ -17,9 +17,9 @@ tags:
 	2. 购买CH341a编程器及编程夹，国内淘宝一堆，国外亚马逊也有一套的，我买的12刀。
 	3. 获取合适的CH341a软件，不同芯片可能存在挑软件现象，需要多尝试。
 
-1. 寻找Bios芯片位置
+1. 寻找Bios芯片位置xx
 
-![](/meida/images/2021-04-13-Legion-bios-program/motherboard.jpg) 
+![](/meida/images/2021-04-13-Legion-bios-program/motherboard.png) 
 
 <br>
 <p>{{ page.date | date_to_string }}</p>
