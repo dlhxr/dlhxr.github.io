@@ -1,7 +1,7 @@
-<!--liantu api for QR code-->
+<!--cli api for QR code-->
 <script type="text/javascript">  
   thisURL  = document.URL;  
-  strwrite = "<p align='center'><img src='http://qr.liantu.com/api.php?w=150&text=" + thisURL + "'/>（传送门）</p>";
+  strwrite = "<p align='center'><img src='https://cli.im/api/qrcode/code?text=" + thisURL + "'/>（传送门）</p>";
   document.write( strwrite ); 
 </script>
 
